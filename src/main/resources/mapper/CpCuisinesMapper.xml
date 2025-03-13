@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.recipes.mapper.CpCuisinesMapper">
+
+    <resultMap type="com.example.recipes.domain.CpCuisines" id="CpCuisinesResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="description"    column="description"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectCpCuisinesVo">
+        select id, name, description, del_flag, create_time, create_by, update_time, update_by from cp_cuisines
+    </sql>
+
+    <select id="selectCpCuisinesList" parameterType="com.example.recipes.domain.CpCuisines" resultMap="CpCuisinesResult">
+        <include refid="selectCpCuisinesVo"/>
+        <where>del_flag='0'
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+        </where>
+    </select>
+
+    <select id="selectCpCuisinesById" parameterType="long" resultMap="CpCuisinesResult">
+        <include refid="selectCpCuisinesVo"/>
+        where del_flag='0' and id = #{id}
+    </select>
+
+    <insert id="insertCpCuisines" parameterType="com.example.recipes.domain.CpCuisines" useGeneratedKeys="true" keyProperty="id">
+        insert into cp_cuisines
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="description != null">description,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="description != null">#{description},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCpCuisines" parameterType="com.example.recipes.domain.CpCuisines">
+        update cp_cuisines
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCpCuisinesById" parameterType="long">
+        update cp_cuisines set del_flag='2' where id = #{id}
+    </delete>
+
+    <delete id="deleteCpCuisinesByIds" parameterType="long">
+        update cp_cuisines set del_flag='2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
