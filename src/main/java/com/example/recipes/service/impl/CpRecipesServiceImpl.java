@@ -1,7 +1,14 @@
 package com.example.recipes.service.impl;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import com.example.recipes.config.auth.UserUtil;
+import com.example.recipes.domain.CpRating;
+import com.example.recipes.domain.CpUser;
+import com.example.recipes.mapper.CpRatingMapper;
+import com.example.recipes.mapper.CpUserMapper;
+import com.example.recipes.utils.CosineSimilarity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.recipes.mapper.CpRecipesMapper;
@@ -19,6 +26,10 @@ public class CpRecipesServiceImpl implements ICpRecipesService
 {
     @Autowired
     private CpRecipesMapper cpRecipesMapper;
+    @Autowired
+    private CpRatingMapper cpRatingMapper;
+    @Autowired
+    private CpUserMapper cpUserMapper;
 
     /**
      * 查询菜谱
@@ -92,5 +103,67 @@ public class CpRecipesServiceImpl implements ICpRecipesService
     public int deleteCpRecipesById(Long id)
     {
         return cpRecipesMapper.deleteCpRecipesById(id);
+    }
+
+    @Override
+    public List<CpRecipes> recommendFoods() {
+
+
+        String username = UserUtil.getCurrentUsername();
+        List<String> similarUsers = findSimilarCpUsers(username);
+        Set<Long> recommendedFoodIds = new HashSet<>();
+
+        for (String similarUser : similarUsers) {
+            List<Long> foodIds = cpRatingMapper.selectFoodIdsByUsername(similarUser);
+            recommendedFoodIds.addAll(foodIds);
+        }
+        if (recommendedFoodIds.isEmpty()){
+            return Collections.emptyList();
+        }
+        return cpRecipesMapper.selectSfFoodListByIds(recommendedFoodIds);
+        
+        
+    }
+
+
+    public List<String> findSimilarCpUsers(String username) {
+        List<String> similarCpUsers = new ArrayList<>();
+        List<CpUser> users = cpUserMapper.selectCpUserList(null);
+
+        CpUser currentCpUser = cpUserMapper.selectCpUserByUsername(username);
+        if (currentCpUser == null) return similarCpUsers;
+
+        Map<String, Double> similarityScores = new HashMap<>();
+        for (CpUser user : users) {
+            if (!user.getUsername().equals(username)) {
+                double similarity = CosineSimilarity.calculateSimilarity(getUserRatings(username), getUserRatings(user.getUsername()));
+                similarityScores.put(user.getUsername(), similarity);
+            }
+        }
+
+        return similarityScores.entrySet().stream()
+                .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
+                .limit(1)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<Integer> getUserRatings(String username) {
+        // 获取所有美食ID，确保向量维度一致
+        List<Long> allFoodIds = cpRecipesMapper.selectSfFoodIds();
+
+        // 获取该用户的评分数据（foodId -> rating）
+        Map<Long, Integer> userRatings = cpRatingMapper.findRatingsByUsername(username)
+                .stream()
+                .collect(Collectors.toMap(CpRating::getFoodId, CpRating::getRating));
+
+        // 生成评分列表，如果用户未评分则填充 0
+        List<Integer> ratings = new ArrayList<>();
+        for (Long foodId : allFoodIds) {
+            ratings.add(userRatings.getOrDefault(foodId, 0));
+        }
+
+        return ratings;
     }
 }

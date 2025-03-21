@@ -58,4 +58,8 @@ public interface ICpRecipesService
      * @return 结果
      */
     public int deleteCpRecipesById(Long id);
+
+
+
+    List<CpRecipes> recommendFoods();
 }

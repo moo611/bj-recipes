@@ -100,4 +100,18 @@
             #{id}
         </foreach>
     </delete>
+
+
+    <select id="selectSfFoodIds" resultType="long">
+        select id from sf_food where del_flag='0'
+    </select>
+
+    <select id="selectSfFoodListByIds" resultMap="CpRecipesResult">
+        <include refid="selectCpRecipesVo"/>
+        WHERE del_flag='0' and id IN
+        <foreach collection="foodIds" item="foodId" open="(" separator="," close=")">
+            #{foodId}
+        </foreach>
+    </select>
+
 </mapper>

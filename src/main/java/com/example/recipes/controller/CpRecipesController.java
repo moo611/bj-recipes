@@ -57,6 +57,16 @@ public class CpRecipesController extends BaseController
         return R.ok(new PageInfo<CpRecipes>(Collections.emptyList()));
     }
 
+    /**
+     * 协同过滤
+     * @param cpRecipesListReq
+     * @return
+     */
+    @GetMapping("/recommend")
+    public AjaxResult recommend(CpRecipesListReq cpRecipesListReq){
+
+        return AjaxResult.success(cpRecipesService.recommendFoods());
+    }
  
 
     /**

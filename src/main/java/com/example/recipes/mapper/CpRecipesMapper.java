@@ -1,6 +1,8 @@
 package com.example.recipes.mapper;
 
 import java.util.List;
+import java.util.Set;
+
 import com.example.recipes.domain.CpRecipes;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -60,4 +62,11 @@ public interface CpRecipesMapper
      * @return 结果
      */
     public int deleteCpRecipesByIds(Long[] ids);
+
+
+    List<Long> selectSfFoodIds();
+
+
+    List<CpRecipes> selectSfFoodListByIds(Set<Long> foodIds);
+
 }
