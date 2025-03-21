@@ -103,7 +103,7 @@
 
 
     <select id="selectSfFoodIds" resultType="long">
-        select id from sf_food where del_flag='0'
+        select id from cp_recipes where del_flag='0'
     </select>
 
     <select id="selectSfFoodListByIds" resultMap="CpRecipesResult">
