@@ -1,5 +1,6 @@
 package com.example.recipes.service.impl;
 
+import com.example.recipes.config.auth.UserUtil;
 import com.example.recipes.domain.CpUser;
 import com.example.recipes.mapper.CpUserMapper;
 import com.example.recipes.service.ICpUserService;
@@ -20,7 +21,7 @@ import java.util.List;
 public class CpUserServiceImpl implements ICpUserService
 {
     @Autowired
-    private CpUserMapper sptUserMapper;
+    private CpUserMapper cpUserMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;  // 注入 PasswordEncode
     /**
@@ -32,58 +33,73 @@ public class CpUserServiceImpl implements ICpUserService
     @Override
     public CpUser selectCpUserById(Long id)
     {
-        return sptUserMapper.selectCpUserById(id);
+        return cpUserMapper.selectCpUserById(id);
     }
 
     /**
      * 查询用户列表
      *
-     * @param sptUser 用户
+     * @param cpUser 用户
      * @return 用户
      */
     @Override
-    public List<CpUser> selectCpUserList(CpUser sptUser)
+    public List<CpUser> selectCpUserList(CpUser cpUser)
     {
-        return sptUserMapper.selectCpUserList(sptUser);
+        return cpUserMapper.selectCpUserList(cpUser);
     }
 
     /**
      * 新增用户
      *
-     * @param sptUser 用户
+     * @param cpUser 用户
      * @return 结果
      */
     @Override
-    public int insertCpUser(CpUser sptUser)
+    public int insertCpUser(CpUser cpUser)
     {
-        CpUser old = sptUserMapper.selectCpUserByUsername(sptUser.getUsername());
+        CpUser old = cpUserMapper.selectCpUserByUsername(cpUser.getUsername());
         if (old != null){
             return -32001;
         }
-        String encodedPassword = passwordEncoder.encode(sptUser.getPassword());
-        sptUser.setPassword(encodedPassword);
-        sptUser.setCreateTime(new Date());
+        String encodedPassword = passwordEncoder.encode(cpUser.getPassword());
+        cpUser.setPassword(encodedPassword);
+        cpUser.setCreateTime(new Date());
         
-        return sptUserMapper.insertCpUser(sptUser);
+        return cpUserMapper.insertCpUser(cpUser);
     }
 
     /**
      * 修改用户
      *
-     * @param sptUser 用户
+     * @param cpUser 用户
      * @return 结果
      */
     @Override
-    public int updateCpUser(CpUser sptUser)
+    public int updateCpUser(CpUser cpUser)
     {
 
-        CpUser old = sptUserMapper.selectCpUserByUsername(sptUser.getUsername());
-        if (!old.getId().equals(sptUser.getId())){
+        CpUser old = cpUserMapper.selectCpUserByUsername(cpUser.getUsername());
+        if (old!=null && !old.getId().equals(cpUser.getId())){
             return -32001;
         }
 
-        sptUser.setUpdateTime(new Date());
-        return sptUserMapper.updateCpUser(sptUser);
+        cpUser.setUpdateTime(new Date());
+        return cpUserMapper.updateCpUser(cpUser);
+    }
+
+    @Override
+    public int changePwd(String oldPwd, String newPwd) {
+
+        String username = UserUtil.getCurrentUsername();
+        CpUser old = cpUserMapper.selectCpUserByUsername(username);
+
+        if (old!=null && !passwordEncoder.matches(oldPwd, old.getPassword())){
+            return -32001;
+        }
+
+        old.setPassword(passwordEncoder.encode(newPwd));
+        return cpUserMapper.updateCpUser(old);
+
     }
 
     /**
@@ -95,7 +111,7 @@ public class CpUserServiceImpl implements ICpUserService
     @Override
     public int deleteCpUserByIds(Long[] ids)
     {
-        return sptUserMapper.deleteCpUserByIds(ids);
+        return cpUserMapper.deleteCpUserByIds(ids);
     }
 
     /**
@@ -107,11 +123,11 @@ public class CpUserServiceImpl implements ICpUserService
     @Override
     public int deleteCpUserById(Long id)
     {
-        return sptUserMapper.deleteCpUserById(id);
+        return cpUserMapper.deleteCpUserById(id);
     }
 
     @Override
     public CpUser selectRtUserByUsername(String username) {
-        return sptUserMapper.selectCpUserByUsername(username);
+        return cpUserMapper.selectCpUserByUsername(username);
     }
 }

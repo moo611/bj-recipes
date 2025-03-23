@@ -6,6 +6,7 @@ import com.example.recipes.config.auth.UserUtil;
 import com.example.recipes.domain.CpUser;
 import com.example.recipes.domain.base.AjaxResult;
 import com.example.recipes.domain.base.R;
+import com.example.recipes.domain.req.ChangePwdReq;
 import com.example.recipes.domain.req.LoginReq;
 import com.example.recipes.domain.req.CpUserListReq;
 import com.example.recipes.service.ICpUserService;
@@ -138,5 +139,16 @@ public class CpUserController extends BaseController {
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(cpUserService.deleteCpUserByIds(ids));
+    }
+
+
+    @PutMapping("/pwd")
+    public AjaxResult updatePwd(@RequestBody ChangePwdReq changePwdReq) {
+        int rows = cpUserService.changePwd(changePwdReq.getOldPwd(), changePwdReq.getNewPwd());
+        if (rows == -32001){
+            return AjaxResult.error("旧密码不正确");
+        }
+        return toAjax(rows);
+
     }
 }

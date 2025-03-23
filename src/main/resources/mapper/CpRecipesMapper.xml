@@ -18,16 +18,18 @@
         <result property="updateTime"    column="update_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="cuisineName"    column="cuisine_name"    />
+        <result property="price"    column="price"    />
     </resultMap>
 
     <sql id="selectCpRecipesVo">
-        select id, name, description, image_url, cuisine_id, status, source, del_flag, create_time, create_by, update_time, update_by from cp_recipes
+        select id, name, description, image_url, cuisine_id, status, source, del_flag, create_time, create_by, update_time, update_by, price from cp_recipes
     </sql>
 
     <select id="selectCpRecipesList" parameterType="com.example.recipes.domain.CpRecipes" resultMap="CpRecipesResult">
-        select a.id, a.name, a.description, a.image_url, a.cuisine_id, a.status, a.source, a.create_time, b.name cuisine_name from cp_recipes a
+        select a.id, a.name, a.description, a.image_url, a.cuisine_id, a.status, a.source, a.create_time, b.name cuisine_name, a.price from cp_recipes a
         left join cp_cuisines b on a.cuisine_id=b.id
         <where>a.del_flag='0'
+            <if test="cuisineId != null  and cuisineId != ''"> and a.cuisine_id = #{cuisineId}</if>
             <if test="name != null  and name != ''"> and a.name like concat('%', #{name}, '%')</if>
             <if test="status != null  and status != ''"> and a.status = #{status}</if>
             <if test="source != null  and source != ''"> and a.source = #{source}</if>
@@ -55,6 +57,7 @@
             <if test="createBy != null">create_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="updateBy != null">update_by,</if>
+            <if test="price != null">price,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 
@@ -69,6 +72,7 @@
             <if test="createBy != null">#{createBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
+            <if test="price != null">#{price},</if>
         </trim>
     </insert>
 
@@ -86,6 +90,7 @@
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="price != null">price = #{price},</if>
         </trim>
         where id = #{id}
     </update>

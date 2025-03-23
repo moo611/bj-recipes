@@ -44,6 +44,9 @@ public interface ICpUserService
      */
     public int updateCpUser(CpUser cpUser);
 
+
+    int changePwd(String oldPwd, String newPwd);
+
     /**
      * 批量删除用户
      *

@@ -25,26 +25,26 @@ public interface CpUserMapper
     /**
      * 查询用户列表
      *
-     * @param sptUser 用户
+     * @param cpUser 用户
      * @return 用户集合
      */
-    public List<CpUser> selectCpUserList(CpUser sptUser);
+    public List<CpUser> selectCpUserList(CpUser cpUser);
 
     /**
      * 新增用户
      *
-     * @param sptUser 用户
+     * @param cpUser 用户
      * @return 结果
      */
-    public int insertCpUser(CpUser sptUser);
+    public int insertCpUser(CpUser cpUser);
 
     /**
      * 修改用户
      *
-     * @param sptUser 用户
+     * @param cpUser 用户
      * @return 结果
      */
-    public int updateCpUser(CpUser sptUser);
+    public int updateCpUser(CpUser cpUser);
 
     /**
      * 删除用户

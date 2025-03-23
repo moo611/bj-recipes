@@ -6,4 +6,6 @@ import lombok.Data;
 @Data
 public class CpRecipesListReq extends BaseReq {
     String status;
+
+    Long cuisineId;
 }
