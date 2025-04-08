@@ -2,6 +2,8 @@ package com.example.recipes.service;
 
 import java.util.List;
 import com.example.recipes.domain.CpRecipes;
+import com.example.recipes.domain.req.CpRecipesListReq;
+import com.example.recipes.domain.req.CpRecipesListReq2;
 
 /**
  * 菜谱Service接口
@@ -62,4 +64,6 @@ public interface ICpRecipesService
 
 
     List<CpRecipes> recommendFoods();
+
+    List<CpRecipes> recommendFoodsTopk(CpRecipesListReq2 cpRecipesListReq2);
 }

@@ -8,6 +8,7 @@ import com.example.recipes.domain.CpRecipes;
 import com.example.recipes.domain.base.AjaxResult;
 import com.example.recipes.domain.base.R;
 import com.example.recipes.domain.req.CpRecipesListReq;
+import com.example.recipes.domain.req.CpRecipesListReq2;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
@@ -66,6 +67,17 @@ public class CpRecipesController extends BaseController
     public AjaxResult recommend(CpRecipesListReq cpRecipesListReq){
 
         return AjaxResult.success(cpRecipesService.recommendFoods());
+    }
+
+    /**
+     * 每个菜系取前3
+     * @param cpRecipesListReq2
+     * @return
+     */
+    @GetMapping("/recommend2")
+    public AjaxResult recommend2(CpRecipesListReq2 cpRecipesListReq2){
+
+        return AjaxResult.success(cpRecipesService.recommendFoodsTopk(cpRecipesListReq2));
     }
  
 

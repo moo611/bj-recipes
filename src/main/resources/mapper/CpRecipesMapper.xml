@@ -37,6 +37,18 @@
         order by a.create_time desc
     </select>
 
+
+    <select id="selectCpRecipesListTopk" parameterType="com.example.recipes.domain.req.CpRecipesListReq2" resultMap="CpRecipesResult">
+        SELECT r.*,
+               IFNULL(AVG(rt.rating), 0) AS avg_rating
+        FROM cp_recipes r
+        LEFT JOIN cp_rating rt ON r.id = rt.food_id
+        WHERE r.cuisine_id = #{cuisineId}
+        GROUP BY r.id
+        ORDER BY avg_rating DESC LIMIT #{topk}
+    </select>
+
+
     <select id="selectCpRecipesById" parameterType="long" resultMap="CpRecipesResult">
         <include refid="selectCpRecipesVo"/>
         where del_flag='0' and id = #{id}
@@ -112,8 +124,9 @@
     </select>
 
     <select id="selectSfFoodListByIds" resultMap="CpRecipesResult">
-        <include refid="selectCpRecipesVo"/>
-        WHERE del_flag='0' and id IN
+        select a.id, a.name, a.description, a.image_url, a.cuisine_id, a.status, a.source, a.create_time, b.name cuisine_name, a.price from cp_recipes a
+        left join cp_cuisines b on a.cuisine_id=b.id
+        WHERE a.del_flag='0' and a.id IN
         <foreach collection="foodIds" item="foodId" open="(" separator="," close=")">
             #{foodId}
         </foreach>

@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import com.example.recipes.config.auth.UserUtil;
 import com.example.recipes.domain.CpRating;
 import com.example.recipes.domain.CpUser;
+import com.example.recipes.domain.req.CpRecipesListReq;
+import com.example.recipes.domain.req.CpRecipesListReq2;
 import com.example.recipes.mapper.CpRatingMapper;
 import com.example.recipes.mapper.CpUserMapper;
 import com.example.recipes.utils.CosineSimilarity;
@@ -123,6 +125,13 @@ public class CpRecipesServiceImpl implements ICpRecipesService
         return cpRecipesMapper.selectSfFoodListByIds(recommendedFoodIds);
         
         
+    }
+
+    @Override
+    public List<CpRecipes> recommendFoodsTopk(CpRecipesListReq2 cpRecipesListReq2) {
+
+        return cpRecipesMapper.selectCpRecipesListTopk(cpRecipesListReq2);
+
     }
 
 

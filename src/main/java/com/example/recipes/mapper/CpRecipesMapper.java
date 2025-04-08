@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.example.recipes.domain.CpRecipes;
+import com.example.recipes.domain.req.CpRecipesListReq2;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -68,5 +69,7 @@ public interface CpRecipesMapper
 
 
     List<CpRecipes> selectSfFoodListByIds(Set<Long> foodIds);
+
+    List<CpRecipes> selectCpRecipesListTopk(CpRecipesListReq2 cpRecipesListReq2);
 
 }
