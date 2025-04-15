@@ -19,6 +19,7 @@
         <result property="updateBy"    column="update_by"    />
         <result property="cuisineName"    column="cuisine_name"    />
         <result property="price"    column="price"    />
+        <result property="rating" column="avg_rating"/>
     </resultMap>
 
     <sql id="selectCpRecipesVo">

@@ -42,6 +42,17 @@ public class CpRecipes extends BaseEntity
 
     private Double price;
 
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    private Double rating;
+
     public String getCuisineName() {
         return cuisineName;
     }
